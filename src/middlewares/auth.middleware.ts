@@ -52,3 +52,19 @@ export const rbac = async (req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+export const authroizeEmployer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { employerId } = req.cookies;
+  const { id } = req.params; // Job Id
+
+  const job = await prisma.job.findUnique({
+    where: { id },
+    select: { employerId: true },
+  });
+
+  if (!job) res.status(404).json({ success: false, message: "Job not found." });
+};

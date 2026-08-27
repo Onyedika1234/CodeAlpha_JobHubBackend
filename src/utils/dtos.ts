@@ -55,3 +55,35 @@ export const jobDto = (body: any): Job => {
     jobtype: body.jobtype,
   };
 };
+
+export const jobsOutputDto = (body: any) => {
+  const data = body.map((s) => {
+    return {
+      title: s.title,
+      salary: s.salary,
+      summary: s.summary,
+      jobtype: s.jobtype,
+      createdAt: s.createdAt.toLocaleDateString("fr-FR"),
+      employer: {
+        name: s.employer.name,
+        description: s.employer.description,
+      },
+    };
+  });
+
+  return data;
+};
+
+export const jobOutputDto = (body: any) => {
+  return {
+    title: body.title,
+    salary: body.salary,
+    summary: body.summary,
+    jobtype: body.jobtype,
+    createdAt: body.createdAt.toLocaleDateString("fr-FR"),
+    employer: {
+      name: body.employer.name,
+      description: body.employer.description,
+    },
+  };
+};

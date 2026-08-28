@@ -23,6 +23,13 @@ interface Job {
   jobtype: string;
 }
 
+interface Candidate {
+  bio: string;
+  phone: string;
+  location: string;
+  skills: string[];
+}
+
 export const signUpDto = (body: any): SignUp => {
   return {
     name: body.name,
@@ -47,6 +54,15 @@ export const employerDto = (body: any): Employer => {
   };
 };
 
+export const candidateDto = (body: any): Candidate => {
+  return {
+    bio: body.bio,
+    phone: body.phone,
+    location: body.location,
+    skills: body.skills,
+  };
+};
+
 export const jobDto = (body: any): Job => {
   return {
     title: body.title,
@@ -54,24 +70,6 @@ export const jobDto = (body: any): Job => {
     summary: body.summary,
     jobtype: body.jobtype,
   };
-};
-
-export const jobsOutputDto = (body: any) => {
-  const data = body.map((s) => {
-    return {
-      title: s.title,
-      salary: s.salary,
-      summary: s.summary,
-      jobtype: s.jobtype,
-      createdAt: s.createdAt.toLocaleDateString("fr-FR"),
-      employer: {
-        name: s.employer.name,
-        description: s.employer.description,
-      },
-    };
-  });
-
-  return data;
 };
 
 export const jobOutputDto = (body: any) => {

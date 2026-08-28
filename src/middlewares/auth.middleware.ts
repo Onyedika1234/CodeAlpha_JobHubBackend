@@ -32,7 +32,7 @@ export const rbac = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!id) res.status(401).json({ success: false, message: "Unauthorized" });
 
-    const user = await prisma.user.findUnique({
+    const user: any = await prisma.user.findUnique({
       where: { id },
       select: { role: true },
     });
@@ -58,13 +58,24 @@ export const authroizeEmployer = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { employerId } = req.cookies;
-  const { id } = req.params; // Job Id
+  try {
+    const { employerId } = req.cookies;
+    const { id }: any = req.params; // Job Id
 
-  const job = await prisma.job.findUnique({
-    where: { id },
-    select: { employerId: true },
-  });
+    const job = await prisma.job.findUnique({
+      where: { id },
+      select: { employerId: true },
+    });
 
-  if (!job) res.status(404).json({ success: false, message: "Job not found." });
+    if (!job)
+      res.status(404).json({ success: false, message: "Job not found." });
+
+    if (job?.employerId !== employerId) {
+      res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({ success: false, message: `${error}` });
+  }
 };

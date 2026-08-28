@@ -7,6 +7,7 @@ import jobRouter from "./routes/job.route.ts";
 import { globalLimit } from "./utils/ratelimit.ts";
 import cookieParser from "cookie-parser";
 import employerRoute from "./routes/employer.route.ts";
+import candidateRoute from "./routes/candidate.route.ts";
 dotenv.config();
 
 const app: Application = express();
@@ -26,6 +27,8 @@ app.use("/auth", authRouter);
 
 //Company
 app.use("/employer", employerRoute);
+
+app.use("/candidates", candidateRoute);
 
 //Jobs
 app.use("/jobs", jobRouter);

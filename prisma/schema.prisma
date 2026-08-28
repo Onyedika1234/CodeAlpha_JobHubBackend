@@ -24,6 +24,14 @@ model User {
   // companies Company[]
 }
 
+model Candidate{
+  id String @id @default(uuid())
+  bio String
+  phone String
+  location String
+  skills Json
+}
+
 model Employer {
   id          String   @id @default(uuid())
   name        String

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma.ts";
-import { jobOutputDto, jobsOutputDto } from "../utils/dtos.ts";
+import { jobOutputDto } from "../utils/dtos.ts";
 
-export const createJob = async (req: Request, res: Response) => {
+export const createJob = async (req: Request, res: Response): Promise<void> => {
   try {
     const employerId = req.cookies.employerId;
 
@@ -30,7 +30,7 @@ export const createJob = async (req: Request, res: Response) => {
   }
 };
 
-export const getJobs = async (req: Request, res: Response) => {
+export const getJobs = async (req: Request, res: Response): Promise<void> => {
   try {
     // const jobs = await prisma.job.findMany({
     //   include: { employer: true },
@@ -69,9 +69,9 @@ export const getJobs = async (req: Request, res: Response) => {
   }
 };
 
-export const getJob = async (req: Request, res: Response) => {
+export const getJob = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const { id }: any = req.params;
 
     const job = await prisma.job.findUnique({
       where: { id },
@@ -81,6 +81,33 @@ export const getJob = async (req: Request, res: Response) => {
     res.status(200).json({ success: true, job: jobOutputDto(job) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const editJob = async (req: Request, res: Response) => {
+  try {
+    const { id }: any = req.params;
+    let { title, salary, summary, jobtype } = req.body;
+    jobtype = jobtype.toUpperCase();
+
+    const newJob = await prisma.job.update({
+      where: { id },
+      data: {
+        title,
+        salary,
+        summary,
+        jobtype,
+      },
+      include: {
+        employer: true,
+      },
+    });
+
+    res.status(200).json({ success: true, job: jobOutputDto(newJob) });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: `Internal Server Error ${error}` });
   }
 };
 // OUTPUT DTOS SHOULD BE PUT IN PLACE

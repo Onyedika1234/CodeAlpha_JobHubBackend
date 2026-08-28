@@ -1,7 +1,16 @@
-import express, { Router, Response } from "express";
-import { authorize, rbac } from "../middlewares/auth.middleware.ts";
+import express, { Router } from "express";
+import {
+  authorize,
+  authroizeEmployer,
+  rbac,
+} from "../middlewares/auth.middleware.ts";
 import { validateJob } from "../middlewares/validate.middleware.ts";
-import { createJob, getJobs, getJob } from "../controllers/job.controller.ts";
+import {
+  createJob,
+  getJobs,
+  getJob,
+  editJob,
+} from "../controllers/job.controller.ts";
 
 const jobRouter: Router = express.Router();
 
@@ -13,5 +22,5 @@ jobRouter.get("/", authorize, getJobs);
 
 jobRouter.get("/:id", authorize, getJob);
 
-jobRouter.put("/:id", authorize, rbac);
+jobRouter.put("/:id", authorize, rbac, authroizeEmployer, validateJob, editJob);
 export default jobRouter;

@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { signUpDto, loginDto, employerDto, jobDto } from "../utils/dtos.ts";
+import {
+  signUpDto,
+  loginDto,
+  employerDto,
+  jobDto,
+  candidateDto,
+} from "../utils/dtos.ts";
 
 //Validation of Signup data
 export const validateSignUp = (
@@ -81,6 +87,37 @@ export const validateCompany = (
   name = name.trim();
   description = description.trim();
 
+  next();
+};
+
+export const validateCandidate = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  let { bio, phone, location, skills } = candidateDto(req.body);
+
+  if (!bio || !phone || !location || !skills) {
+    res
+      .status(400)
+      .json({ success: false, message: "Important parameters are missing" });
+  }
+  if (
+    typeof bio !== "string" ||
+    typeof phone !== "string" ||
+    typeof location !== "string" ||
+    Array.isArray(skills) !== true
+  ) {
+    res.status(422).json({
+      success: false,
+      message: "Parameters are of the wrong data types",
+    });
+  }
+
+  bio = bio.trim();
+  phone = phone.trim();
+  location = location.trim();
+  skills = skills.map((skill) => skill.toString());
   next();
 };
 

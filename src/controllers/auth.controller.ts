@@ -128,6 +128,8 @@ export const Logout = async (req: Request, res: Response) => {
   try {
     res.clearCookie("token");
     res.clearCookie("userId");
+    res.clearCookie("employerId");
+    res.clearCookie("candidateId");
     res.sendStatus(204);
   } catch (err) {
     res.sendStatus(500);

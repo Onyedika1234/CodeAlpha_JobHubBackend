@@ -55,7 +55,7 @@ export const getCandidate = async (req: Request, res: Response) => {
     });
 
     if (!candidate)
-      res.status(404).json({ success: false, message: "Employer not found" });
+      res.status(404).json({ success: false, message: "Candidate not found" });
 
     res.status(200).json({ success: true, candidate });
   } catch (error) {

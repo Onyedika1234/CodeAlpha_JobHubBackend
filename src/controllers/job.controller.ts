@@ -32,12 +32,21 @@ export const createJob = async (req: Request, res: Response): Promise<void> => {
 
 export const getJobs = async (req: Request, res: Response): Promise<void> => {
   try {
-    // const jobs = await prisma.job.findMany({
-    //   include: { employer: true },
-    // });
+    let { title, jobtype, employerName }: any = req.query;
 
     const [jobs] = await prisma.$transaction([
       prisma.job.findMany({
+        where: {
+          title: {
+            contains: title,
+          },
+          jobtype: jobtype ? jobtype.toUpperCase() : undefined,
+          employer: {
+            name: {
+              contains: employerName,
+            },
+          },
+        },
         select: {
           title: true,
           salary: true,
@@ -52,20 +61,30 @@ export const getJobs = async (req: Request, res: Response): Promise<void> => {
             },
           },
         },
+
+        // skip: Number(skip),
+        // take: Number(take),
       }),
       prisma.job.count(),
     ]);
 
     // 2. Map only for formatting that SQL can't easily do (like Date locales),
     // but now it only runs on your paginated subset (e.g., 10 or 20 items), NOT 10,000.
-    const formattedJobs = jobs.map((job) => ({
-      ...job,
-      createdAt: job.createdAt.toLocaleDateString("fr-FR"),
-    }));
 
-    res.status(200).json({ success: true, jobs: formattedJobs });
+    if (jobs.length === 0) {
+      res.status(404).json({ success: false, message: "Jobs not found" });
+    } else {
+      const formattedJobs = jobs.map((job) => ({
+        ...job,
+        createdAt: job.createdAt.toLocaleDateString("fr-FR"),
+      }));
+
+      res.status(200).json({ success: true, jobs: formattedJobs });
+    }
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res
+      .status(500)
+      .json({ success: false, message: `Internal Server Error ${error}` });
   }
 };
 

@@ -30,6 +30,7 @@ model Candidate{
   phone String
   location String
   skills Json
+  resume Resume[]
 }
 
 model Employer {
@@ -52,6 +53,16 @@ model Job {
   candidateId     String?
   application Application[]
   createdAt  DateTime @default(now())
+}
+
+model Resume{
+  id String @id @default(uuid())
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+  candidateId String
+  fileName String
+  fileUrl String
+  publicId String
+  createdAt DateTime @default(now())
 }
 
 model Application {

@@ -8,6 +8,7 @@ import { globalLimit } from "./utils/ratelimit.ts";
 import cookieParser from "cookie-parser";
 import employerRoute from "./routes/employer.route.ts";
 import candidateRoute from "./routes/candidate.route.ts";
+import resumeRoute from "./routes/resume.route.ts";
 dotenv.config();
 
 const app: Application = express();
@@ -32,6 +33,10 @@ app.use("/candidates", candidateRoute);
 
 //Jobs
 app.use("/jobs", jobRouter);
+
+//Resume
+
+app.use("/resume", resumeRoute);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the Job Hub Api");

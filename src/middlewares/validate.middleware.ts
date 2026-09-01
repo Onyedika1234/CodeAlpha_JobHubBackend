@@ -5,6 +5,7 @@ import {
   employerDto,
   jobDto,
   candidateDto,
+  applicationDto,
 } from "../utils/dtos.ts";
 
 //Validation of Signup data
@@ -148,5 +149,27 @@ export const validateJob = (
   summary = summary.trim();
   jobtype = jobtype.trim();
 
+  next();
+};
+
+export const validateApplication = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  let { resumeId, coverletter } = applicationDto(req.body);
+  if (!resumeId || !coverletter)
+    res
+      .status(400)
+      .json({ success: false, message: "Some Parameters are missing" });
+
+  if (typeof resumeId !== "string" || typeof coverletter !== "string") {
+    res.status(422).json({
+      success: false,
+      message: "Parameters are of the wrong data type",
+    });
+  }
+  resumeId = resumeId.trim();
+  coverletter = coverletter.trim();
   next();
 };

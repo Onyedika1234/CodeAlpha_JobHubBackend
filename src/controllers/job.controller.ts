@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma.ts";
-import { jobOutputDto } from "../utils/dtos.ts";
+import { EmployerjobOutputDto, jobOutputDto } from "../utils/dtos.ts";
 
 export const createJob = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -91,13 +91,22 @@ export const getJobs = async (req: Request, res: Response): Promise<void> => {
 export const getJob = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id }: any = req.params;
+    const employerId = req.cookies.employerId;
 
     const job = await prisma.job.findUnique({
       where: { id },
       include: { employer: true },
     });
 
-    res.status(200).json({ success: true, job: jobOutputDto(job) });
+    if (!employerId) {
+      res.status(200).json({ success: true, job: jobOutputDto(job) });
+    } else {
+      job?.employerId === employerId
+        ? res
+            .status(200)
+            .json({ success: true, job: EmployerjobOutputDto(job) })
+        : res.status(200).json({ success: true, job: jobOutputDto(job) });
+    }
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }

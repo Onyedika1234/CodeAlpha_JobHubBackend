@@ -30,6 +30,10 @@ interface Candidate {
   skills: string[];
 }
 
+interface Application {
+  resumeId: string;
+  coverletter: string;
+}
 export const signUpDto = (body: any): SignUp => {
   return {
     name: body.name,
@@ -83,5 +87,34 @@ export const jobOutputDto = (body: any) => {
       name: body.employer.name,
       description: body.employer.description,
     },
+  };
+};
+
+export const EmployerjobOutputDto = (body: any) => {
+  return {
+    title: body.title,
+    salary: body.salary,
+    summary: body.summary,
+    jobtype: body.jobtype,
+    createdAt: body.createdAt.toLocaleDateString("fr-FR"),
+    employer: {
+      name: body.employer.name,
+      description: body.employer.description,
+    },
+    application: {
+      candiateId: body.application.candidateId,
+      jobId: body.application.jobId,
+      resumeId: body.application.resumeId,
+      coverletter: body.application.coverletter,
+      status: body.application.coverletter,
+      createdAt: body.application.createdAt.toLocaleDateString("fr-FR"),
+    },
+  };
+};
+
+export const applicationDto = (body: any) => {
+  return {
+    resumeId: body.resumeId,
+    coverletter: body.coverletter,
   };
 };

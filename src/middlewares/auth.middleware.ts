@@ -53,6 +53,36 @@ export const rbac = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const candidaterbac = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const candidateId = req.cookies.candidateId;
+
+    if (!candidateId)
+      res.status(401).json({ success: false, message: "Unauthorized" });
+
+    const candidate: any = await prisma.candidate.findUnique({
+      where: { id: candidateId },
+    });
+
+    if (!candidate)
+      res.status(404).json({
+        success: false,
+        message:
+          "Candidate profile not found, This ability is only accessed by candidates",
+      });
+
+    next();
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+//this is used to check if this is the particular employer that posted the job
+
 export const authroizeEmployer = async (
   req: Request,
   res: Response,

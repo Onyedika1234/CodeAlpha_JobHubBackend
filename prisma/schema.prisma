@@ -31,6 +31,7 @@ model Candidate{
   location String
   skills Json
   resume Resume[]
+  application Application[]
 }
 
 model Employer {
@@ -67,9 +68,13 @@ model Resume{
 
 model Application {
   id String @id @default(uuid())
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+  candidateId String
   job Job @relation(fields: [jobId], references: [id])
   jobId String
+  resumeId String @unique
   coverletter String
+  status JobStatus @default(PENDING)
   createdAt DateTime @default(now())
 }
 
@@ -82,4 +87,11 @@ enum Jobtype {
   REMOTE
   ONSITE
   HYBRID
+}
+
+enum JobStatus{
+  PENDING
+  REVIEW
+  REJECT
+  ACCEPT
 }
